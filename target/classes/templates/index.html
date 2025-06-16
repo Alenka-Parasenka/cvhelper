@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartCV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; background: #fafbfc; margin: 0; }
+        .container { max-width: 420px; margin: 32px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 24px; }
+        .logo { font-weight: bold; font-size: 1.3em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .steps { color: #888; font-size: 0.95em; margin-bottom: 18px; }
+        label { font-weight: 500; margin-top: 18px; display: block; }
+        textarea, input[type="text"] { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
+        .file-upload { margin: 10px 0; }
+        .btn { width: 100%; background: #4285f4; color: #fff; border: none; border-radius: 6px; padding: 12px; font-size: 1em; cursor: pointer; margin: 18px 0 12px; }
+        .btn:active { background: #3367d6; }
+        .section { margin-top: 24px; }
+        .tabs { display: flex; border-bottom: 1px solid #eee; }
+        .tab { flex: 1; text-align: center; padding: 8px 0; cursor: pointer; background: #f5f5f5; border: none; border-radius: 6px 6px 0 0; font-weight: 500; }
+        .tab.active { background: #fff; border-bottom: 2px solid #4285f4; color: #4285f4; }
+        .tab-content { background: #fff; border-radius: 0 0 6px 6px; padding: 14px; min-height: 80px; border: 1px solid #eee; border-top: none; font-size: 0.98em; }
+        .actions { display: flex; gap: 8px; margin-top: 10px; }
+        .actions button, .actions label { flex: 1; padding: 8px; font-size: 0.97em; border-radius: 6px; border: 1px solid #ddd; background: #f5f5f5; cursor: pointer; }
+        .actions input[type="checkbox"] { margin-right: 4px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">◆ SmartCV</div>
+    <div class="steps">1. Резюме &nbsp; 2. Вакансия &nbsp; 3. Результат</div>
+
+    <form>
+        <label>Ваше резюме
+            <textarea rows="4" placeholder="Введите текст резюме..."></textarea>
+        </label>
+        <div class="file-upload">
+            <label style="display:inline-block;cursor:pointer;">
+                <input type="file" accept=".pdf,.doc,.docx" style="display:none;">
+                &#128194; Загрузить файл (.pdf/.docx)
+            </label>
+        </div>
+        <button class="btn" type="button">Сгенерировать</button>
+
+        <label>Ссылка на вакансию
+            <input type="text" placeholder="https://hh.ru/vacancy/123456">
+        </label>
+    </form>
+
+    <div class="section">
+        <div style="font-weight:500; margin-bottom:8px;">Кастомизированное резюме</div>
+        <div class="tabs">
+            <button class="tab active" type="button" onclick="showTab(0)">Кастомизированное резюме</button>
+            <button class="tab" type="button" onclick="showTab(1)">Сопроводительное письмо</button>
+        </div>
+        <div class="tab-content" id="tab0">
+            <div style="color:#bbb;">&mdash; Здесь появится кастомизированное резюме &mdash;</div>
+        </div>
+        <div class="tab-content" id="tab1" style="display:none;">
+            <div style="color:#bbb;">&mdash; Здесь появится сопроводительное письмо &mdash;</div>
+        </div>
+        <div class="actions">
+            <button type="button">Скопировать текст</button>
+            <button type="button">Скачать .docx</button>
+            <label><input type="checkbox"> Отправить себе на email</label>
+        </div>
+    </div>
+</div>
+<script>
+function showTab(idx) {
+    document.querySelectorAll('.tab').forEach((el,i)=>{
+        el.classList.toggle('active', i===idx);
+    });
+    document.getElementById('tab0').style.display = idx===0 ? '' : 'none';
+    document.getElementById('tab1').style.display = idx===1 ? '' : 'none';
+}
+</script>
+</body>
+</html> 
