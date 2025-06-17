@@ -21,7 +21,7 @@
         }
         .logo {
             font-weight: bold;
-            font-size: 1.3em;
+            font-size: 2.6em;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
@@ -44,9 +44,11 @@
             gap: 0;
         }
         label {
-            font-weight: 500;
-            margin-top: 18px;
             display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.13em;
+            color: var(--text);
         }
         textarea, input[type="text"] {
             width: 100%;
@@ -57,9 +59,11 @@
             font-size: 1.08em;
             background: #f9fafb;
             resize: vertical;
+            box-sizing: border-box;
         }
         .file-upload {
             margin: 10px 0 0 0;
+            width: 100%;
         }
         .file-upload label {
             display: inline-block;
@@ -87,9 +91,14 @@
             cursor: pointer;
             margin: 22px 0 14px;
             transition: background 0.2s;
+            box-sizing: border-box;
         }
         .btn:active {
             background: #1d4ed8;
+        }
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
         .section {
             margin: 38px auto 0 auto;
@@ -100,6 +109,7 @@
             font-weight: 600;
             margin-bottom: 10px;
             font-size: 1.13em;
+            color: var(--text);
         }
         .block-content {
             background: var(--white);
@@ -108,6 +118,8 @@
             min-height: 80px;
             border: 1px solid var(--border);
             font-size: 1.04em;
+            white-space: pre-wrap;
+            box-sizing: border-box;
         }
         .actions {
             display: flex;
@@ -129,16 +141,130 @@
         .actions button:hover {
             background: #e0e7ef;
         }
+        .loading {
+            color: var(--muted);
+            font-style: italic;
+        }
+        .error {
+            color: #dc2626;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #059669;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .loading-spinner {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            width: 90%;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid var(--main-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .loading-subtext {
+            color: var(--muted);
+            font-size: 0.9em;
+        }
+        
+        /* Bottom spacing */
+        .section:last-child {
+            margin-bottom: 80px;
+        }
+        
         @media (max-width: 1000px) {
             form, .section {
                 max-width: 99vw;
                 margin: 0 0.5vw;
                 padding: 0;
             }
+            .logo {
+                font-size: 2.2em;
+            }
         }
         @media (max-width: 600px) {
-            .block-content { padding: 12px 2vw; }
-            .actions button { flex-basis: 100%; }
+            .block-content { 
+                padding: 12px 2vw; 
+                box-sizing: border-box;
+            }
+            .actions button { 
+                flex-basis: 100%; 
+            }
+            .logo {
+                font-size: 1.8em;
+            }
+            textarea, input[type="text"], .btn {
+                box-sizing: border-box;
+            }
+            .section:last-child {
+                margin-bottom: 30px;
+            }
         }
     </style>
 </head>
@@ -146,43 +272,312 @@
     <div class="logo">◆ SmartCV</div>
     <div class="steps">1. Резюме &nbsp; 2. Вакансия &nbsp; 3. Результат</div>
 
-    <form>
+    <form id="resumeForm">
         <label>Ваше резюме
-            <textarea rows="4" placeholder="Введите текст резюме..."></textarea>
+            <textarea id="resumeText" rows="4" placeholder="Введите текст резюме..."></textarea>
         </label>
         <div class="file-upload">
             <label>
-                <input type="file" accept=".pdf,.doc,.docx" style="display:none;">
+                <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" style="display:none;">
                 &#128194; Загрузить файл (.pdf/.docx)
             </label>
         </div>
         <label style="margin-top:18px;">Ссылка на вакансию
-            <input type="text" placeholder="https://hh.ru/vacancy/123456">
+            <input type="text" id="vacancyUrl" placeholder="https://hh.ru/vacancy/123456">
         </label>
-        <button class="btn" type="button">Сгенерировать</button>
+        <button class="btn" type="button" id="generateBtn">Сгенерировать</button>
     </form>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <div class="loading-text" id="loadingText">Генерация резюме...</div>
+            <div class="loading-subtext" id="loadingSubtext">Пожалуйста, подождите</div>
+        </div>
+    </div>
 
     <div class="section">
         <div class="block-title">Кастомизированное резюме</div>
-        <div class="block-content" id="customResume">
-            <div style="color:#bbb;">&mdash; Здесь появится кастомизированное резюме &mdash;</div>
-        </div>
+        <div class="block-content" id="customResume">— Здесь появится кастомизированное резюме</div>
         <div class="actions">
-            <button type="button">Скопировать текст</button>
-            <button type="button">Скачать .docx</button>
-            <button type="button">Отправить себе на email</button>
+            <button onclick="copyText('customResume')">Копировать</button>
+            <button onclick="downloadDocx('customResume', 'customized-resume')">Скачать DOCX</button>
         </div>
     </div>
     <div class="section">
         <div class="block-title">Сопроводительное письмо</div>
-        <div class="block-content" id="coverLetter">
-            <div style="color:#bbb;">&mdash; Здесь появится сопроводительное письмо &mdash;</div>
-        </div>
+        <div class="block-content" id="coverLetter">— Здесь появится сопроводительное письмо</div>
         <div class="actions">
-            <button type="button">Скопировать текст</button>
-            <button type="button">Скачать .docx</button>
-            <button type="button">Отправить себе на email</button>
+            <button onclick="copyText('coverLetter')">Копировать</button>
+            <button onclick="downloadDocx('coverLetter', 'cover-letter')">Скачать DOCX</button>
         </div>
     </div>
+
+    </div>
+
+    <script>
+        let currentResults = {};
+
+        // Функции для управления loading element
+        function showLoading(text = 'Генерация резюме...', subtext = 'Пожалуйста, подождите') {
+            document.getElementById('loadingText').textContent = text;
+            document.getElementById('loadingSubtext').textContent = subtext;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        function updateLoadingText(text, subtext) {
+            document.getElementById('loadingText').textContent = text;
+            if (subtext) {
+                document.getElementById('loadingSubtext').textContent = subtext;
+            }
+        }
+
+        // Обработка параметров авторизации при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authSuccess = urlParams.get('auth_success');
+            const authError = urlParams.get('auth_error');
+            
+            if (authSuccess === 'true') {
+                showMessage('Авторизация в HeadHunter прошла успешно! Восстанавливаем данные и генерируем резюме...', 'success');
+                
+                // Восстанавливаем данные из сессии и автоматически генерируем
+                restoreSessionAndGenerate();
+                
+                // Очищаем URL от параметров
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (authError) {
+                let errorMessage = 'Ошибка авторизации';
+                if (authError === 'access_denied') {
+                    errorMessage = 'Авторизация была отменена пользователем';
+                } else if (authError === 'token_error') {
+                    errorMessage = 'Ошибка получения токена авторизации';
+                }
+                showMessage(errorMessage, 'error');
+                // Очищаем URL от параметров
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        // Функция восстановления сессии и автоматической генерации
+        async function restoreSessionAndGenerate() {
+            showLoading('Восстановление данных...', 'Подготовка к генерации');
+            
+            try {
+                const response = await fetch('/api/restore-session');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    hideLoading();
+                    showMessage('Ошибка восстановления данных: ' + result.error, 'error');
+                    return;
+                }
+                
+                // Восстанавливаем данные в форму
+                if (result.resumeText) {
+                    document.getElementById('resumeText').value = result.resumeText;
+                }
+                if (result.vacancyUrl) {
+                    document.getElementById('vacancyUrl').value = result.vacancyUrl;
+                }
+                if (result.resumeFilename) {
+                    document.getElementById('resumeText').placeholder = `Восстановлен файл: ${result.resumeFilename}`;
+                }
+                
+                // Отображаем результаты, если они были автоматически сгенерированы
+                if (result.autoGenerated) {
+                    updateLoadingText('Генерация завершена!', 'Отображение результатов...');
+                    
+                    document.getElementById('customResume').textContent = result.customizedResume || 'Ошибка генерации';
+                    document.getElementById('coverLetter').textContent = result.coverLetter || 'Ошибка генерации';
+                    currentResults = result;
+                    
+                    hideLoading();
+                    showMessage('Резюме и сопроводительное письмо успешно сгенерированы!', 'success');
+                } else {
+                    hideLoading();
+                }
+                
+            } catch (error) {
+                console.error('Ошибка восстановления сессии:', error);
+                hideLoading();
+                showMessage('Ошибка восстановления данных: ' + error.message, 'error');
+            }
+        }
+
+        // Обработка загрузки файла
+        document.getElementById('resumeFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('resumeText').value = '';
+                document.getElementById('resumeText').placeholder = `Выбран файл: ${file.name}`;
+            }
+        });
+
+        // Обработка ввода текста
+        document.getElementById('resumeText').addEventListener('input', function() {
+            if (this.value.trim()) {
+                document.getElementById('resumeFile').value = '';
+            }
+        });
+
+        // Генерация резюме и сопроводительного письма
+        document.getElementById('generateBtn').addEventListener('click', async function() {
+            const resumeText = document.getElementById('resumeText').value;
+            const resumeFile = document.getElementById('resumeFile').files[0];
+            const vacancyUrl = document.getElementById('vacancyUrl').value;
+
+            if (!resumeText.trim() && !resumeFile) {
+                alert('Пожалуйста, введите текст резюме или загрузите файл');
+                return;
+            }
+
+            if (!vacancyUrl.trim()) {
+                alert('Пожалуйста, введите ссылку на вакансию');
+                return;
+            }
+
+            this.disabled = true;
+            this.textContent = 'Генерация...';
+            
+            // Показываем loading
+            showLoading('Подготовка данных...', 'Обработка резюме и вакансии');
+
+            try {
+                // Сначала сохраняем данные в сессии
+                const formData = new FormData();
+                if (resumeText.trim()) {
+                    formData.append('resumeText', resumeText);
+                }
+                if (resumeFile) {
+                    formData.append('resumeFile', resumeFile);
+                }
+                formData.append('vacancyUrl', vacancyUrl);
+
+                updateLoadingText('Сохранение данных...', 'Подготовка к авторизации');
+                
+                const parseResponse = await fetch('/api/parse-resume', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!parseResponse.ok) {
+                    throw new Error(`HTTP error! status: ${parseResponse.status}`);
+                }
+
+                // Проверяем авторизацию HH
+                updateLoadingText('Проверка авторизации...', 'Подключение к HeadHunter');
+                
+                const authResponse = await fetch('/api/hh/auth');
+                const authData = await authResponse.json();
+                
+                if (authData.authUrl) {
+                    // Авторизация требуется - перенаправляем пользователя
+                    updateLoadingText('Переход к авторизации...', 'Открытие HeadHunter');
+                    
+                    showMessage('Переходим к авторизации в HeadHunter...', 'info');
+                    
+                    // Небольшая задержка для показа сообщения
+                    setTimeout(() => {
+                        window.location.href = authData.authUrl;
+                    }, 1000);
+                } else {
+                    // Авторизация не требуется - генерируем сразу
+                    updateLoadingText('Генерация резюме...', 'Анализ вакансии и адаптация');
+                    
+                    const generateResponse = await fetch('/api/generate', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!generateResponse.ok) {
+                        throw new Error(`HTTP error! status: ${generateResponse.status}`);
+                    }
+
+                    updateLoadingText('Генерация сопроводительного письма...', 'Финальная обработка');
+                    
+                    const result = await generateResponse.json();
+                    currentResults = result;
+
+                    // Отображаем результаты
+                    document.getElementById('customResume').textContent = result.customizedResume || 'Ошибка генерации';
+                    document.getElementById('coverLetter').textContent = result.coverLetter || 'Ошибка генерации';
+
+                    hideLoading();
+                    showMessage('Результаты успешно сгенерированы!', 'success');
+                }
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                hideLoading();
+                showMessage('Ошибка при генерации: ' + error.message, 'error');
+            } finally {
+                this.disabled = false;
+                this.textContent = 'Сгенерировать';
+            }
+        });
+
+        // Копирование текста
+        function copyText(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            if (text && text.trim() && !text.includes('— Здесь появится')) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showMessage('Текст скопирован в буфер обмена!', 'success');
+                }).catch(() => {
+                    showMessage('Ошибка копирования', 'error');
+                });
+            } else {
+                showMessage('Нет текста для копирования', 'error');
+            }
+        }
+
+        // Скачивание DOCX (заглушка)
+        function downloadDocx(elementId, filename) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            if (text && text.trim() && !text.includes('— Здесь появится')) {
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${filename}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showMessage('Файл скачан!', 'success');
+            } else {
+                showMessage('Нет текста для скачивания', 'error');
+            }
+        }
+
+        // Показ сообщений
+        function showMessage(message, type) {
+            const existingMessage = document.querySelector('.message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            
+            document.body.insertBefore(messageDiv, document.body.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
 </body>
 </html> 

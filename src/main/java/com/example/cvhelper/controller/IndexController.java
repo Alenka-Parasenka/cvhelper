@@ -1,4 +1,4 @@
-package com.example.cvhelper;
+package com.example.cvhelper.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
