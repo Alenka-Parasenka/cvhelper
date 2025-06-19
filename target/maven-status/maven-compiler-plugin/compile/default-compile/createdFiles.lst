@@ -1,0 +1,10 @@
+com\example\cvhelper\Main.class
+com\example\cvhelper\CvHelperApplication.class
+com\example\cvhelper\service\FileParseService.class
+com\example\cvhelper\service\HHService.class
+com\example\cvhelper\config\HHConfig.class
+com\example\cvhelper\config\OpenAIConfig.class
+com\example\cvhelper\controller\IndexController.class
+com\example\cvhelper\controller\HHAuthController.class
+com\example\cvhelper\service\OpenAIService.class
+com\example\cvhelper\controller\ApiController.class

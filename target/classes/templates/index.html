@@ -15,9 +15,10 @@
         }
         body {
             margin: 0;
-            background: var(--bg);
+            background: linear-gradient(120deg, #f1f5f9 0%, #cbd5e1 100%);
             font-family: 'Segoe UI', Arial, sans-serif;
             color: var(--text);
+            min-height: 100vh;
         }
         .logo {
             font-weight: bold;
@@ -30,7 +31,7 @@
             justify-content: center;
         }
         .steps {
-            color: var(--muted);
+            color: #374151;
             font-size: 0.97em;
             margin-bottom: 18px;
             text-align: center;
@@ -56,10 +57,19 @@
             margin-top: 6px;
             border: 1px solid var(--border);
             border-radius: 7px;
-            font-size: 1.08em;
+            font-size: 1.04em;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: #f9fafb;
             resize: vertical;
             box-sizing: border-box;
+        }
+        
+        textarea::placeholder, input[type="text"]::placeholder {
+            color: #9ca3af;
+            font-size: 0.95em;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-weight: normal;
+            font-style: normal;
         }
         .file-upload {
             margin: 10px 0 0 0;
@@ -118,8 +128,12 @@
             min-height: 80px;
             border: 1px solid var(--border);
             font-size: 1.04em;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-weight: normal;
+            font-style: normal;
             white-space: pre-wrap;
             box-sizing: border-box;
+            color: #9ca3af;
         }
         .actions {
             display: flex;
@@ -399,6 +413,15 @@
                     
                     document.getElementById('customResume').textContent = result.customizedResume || 'Ошибка генерации';
                     document.getElementById('coverLetter').textContent = result.coverLetter || 'Ошибка генерации';
+                    
+                    // Изменяем цвет текста на обычный для сгенерированного контента
+                    if (result.customizedResume) {
+                        document.getElementById('customResume').style.color = 'var(--text)';
+                    }
+                    if (result.coverLetter) {
+                        document.getElementById('coverLetter').style.color = 'var(--text)';
+                    }
+                    
                     currentResults = result;
                     
                     hideLoading();
@@ -407,6 +430,9 @@
                     hideLoading();
                 }
                 
+                // Сбрасываем цвет текста в блоках результатов на placeholder цвет
+                document.getElementById('customResume').style.color = '#6b7280';
+                document.getElementById('coverLetter').style.color = '#6b7280';
             } catch (error) {
                 console.error('Ошибка восстановления сессии:', error);
                 hideLoading();
@@ -511,6 +537,14 @@
                     // Отображаем результаты
                     document.getElementById('customResume').textContent = result.customizedResume || 'Ошибка генерации';
                     document.getElementById('coverLetter').textContent = result.coverLetter || 'Ошибка генерации';
+                    
+                    // Изменяем цвет текста на обычный для сгенерированного контента
+                    if (result.customizedResume) {
+                        document.getElementById('customResume').style.color = 'var(--text)';
+                    }
+                    if (result.coverLetter) {
+                        document.getElementById('coverLetter').style.color = 'var(--text)';
+                    }
 
                     hideLoading();
                     showMessage('Результаты успешно сгенерированы!', 'success');
@@ -580,4 +614,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
